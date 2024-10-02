@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/no-unknown-property */
 import { Canvas } from "@react-three/fiber";
 import {
@@ -6,17 +7,44 @@ import {
 import { Suspense } from "react";
 import * as THREE from "three";
 import { useControls } from 'leva'
+import { useState } from 'react'
+import MorphedCube from './MorphedCube'
 
 /**
  * The main scene component, rendering the 3D scene.
  *
  * @return {JSX.Element} The JSX element representing the scene.
  */
-const Scene = () => {
+const Scene = (props) => {
+
+    const {
+        resetSelection
+    } = props;
 
     const { bgColor } = useControls('Page', {
         bgColor: '#2936ff',
     })
+
+    const { animate, spherify, twist } = useControls('Shape', {
+        spherify: {
+            label: 'Spherify',
+            value: 0,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+        twist: {
+            label: 'Twist',
+            value: 0,
+            min: 0,
+            max: 2,
+            step: 0.01,
+        },
+        animate: true,
+    })
+
+
+    const meshProps = { resetSelection, spherify, twist, animate }
 
     return (
         <>
@@ -50,6 +78,7 @@ const Scene = () => {
 
             {/* Render the structure */}
             <Suspense fallback={null}>
+                <MorphedCube {...meshProps} position={[0, 0, -2]} />
             </Suspense>
         </>
     );
@@ -62,6 +91,7 @@ const Scene = () => {
  * @return {JSX.Element} The JSX element representing the canvas.
  */
 const CanvasLayout = () => {
+    const [resetSelection, triggerReset] = useState(0)
     return (
         <Canvas
             /**
@@ -102,8 +132,11 @@ const CanvasLayout = () => {
                 toneMapping: THREE.ACESFilmicToneMapping,
                 toneMappingExposure: 1.5,
             }}
+            onPointerMissed={() => triggerReset(Date.now())}
         >
-            <Scene />
+            <Scene
+                resetSelection={resetSelection}
+            />
         </Canvas>
     );
 };
