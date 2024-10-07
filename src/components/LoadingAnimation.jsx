@@ -1,5 +1,5 @@
 
-
+import React from 'react'
 export const LoadingAnimation = () => {
   return (
     <div className="relative grid h-full w-full place-items-center">

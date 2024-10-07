@@ -1,5 +1,7 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
 import * as THREE from 'three'
-import { useRef, useEffect, useMemo, useState } from 'react'
+import React, { useRef, useEffect, useMemo, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 //import { useHelper } from '@react-three/drei'
 import { useControls } from 'leva'
@@ -103,7 +105,7 @@ export default function MorphedCube({ spherify = 1, twist = 0, animate = true, .
     if (showBasicHelper) basicThreeHelperRef.current.visibile = isSelected
   }, [isSelected, showBasicHelper, basicThreeHelperRef])
 
-  function handleClick(e) {
+  function handleClick() {
     setSelected(true)
   }
 
