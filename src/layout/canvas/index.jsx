@@ -2,14 +2,18 @@
 /* eslint-disable react/no-unknown-property */
 import { Canvas } from "@react-three/fiber";
 import {
-    OrbitControls
+    OrbitControls,
+    Lightformer,
+    Environment,
+    Html
 } from "@react-three/drei";
 import { Suspense } from "react";
 import * as THREE from "three";
 import { useControls } from 'leva'
 import { useState } from 'react'
 import MorphedCube from './MorphedCube'
-
+import { Model } from "../../components/Model";
+import { LoadingAnimation } from "../../components/LoadingAnimation";
 /**
  * The main scene component, rendering the 3D scene.
  *
@@ -46,12 +50,18 @@ const Scene = (props) => {
 
     const meshProps = { resetSelection, spherify, twist, animate }
 
+    function Fallback() {
+        return (
+            <Html>
+                <LoadingAnimation />
+            </Html>
+        );
+    }
+
     return (
         <>
-            {/* Set the background color to white */}
             <color attach="background" args={[bgColor]} />
-
-            {/* Orbit controls, allowing the user to pan, zoom, and rotate the scene */}
+            {/* <ambientLight intensity={2} /> */}
             <OrbitControls
                 enableDamping
                 target0={[0, 1, 0]}
@@ -65,20 +75,77 @@ const Scene = (props) => {
                 maxDistance={20}
             />
 
-            {/* Set up the directional light */}
-            <directionalLight
-                position={[2, 4, 4]}
-                castShadow
-                intensity={0.5}
-                shadow-mapSize={2048}
-                shadow-radius={2} // Adds softness to the shadows
-                shadow-radi
-                us={2} // Adds softness to the shadows
-            />
+            <Environment files={"/default.exr"} resolution={512}>
+                <Lightformer
+                    intensity={2}
+                    rotation-x={Math.PI / 2}
+                    position={[0, 4, -9]}
+                    scale={[10, 1, 1]}
+                />
+                <Lightformer
+                    intensity={2}
+                    rotation-x={Math.PI / 2}
+                    position={[0, 4, -6]}
+                    scale={[10, 1, 1]}
+                />
+                <Lightformer
+                    intensity={2}
+                    rotation-x={Math.PI / 2}
+                    position={[0, 4, -3]}
+                    scale={[10, 1, 1]}
+                />
+                <Lightformer
+                    intensity={2}
+                    rotation-x={Math.PI / 2}
+                    position={[0, 4, 0]}
+                    scale={[10, 1, 1]}
+                />
+                <Lightformer
+                    intensity={2}
+                    rotation-x={Math.PI / 2}
+                    position={[0, 4, 3]}
+                    scale={[10, 1, 1]}
+                />
+                <Lightformer
+                    intensity={2}
+                    rotation-x={Math.PI / 2}
+                    position={[0, 4, 6]}
+                    scale={[10, 1, 1]}
+                />
+                <Lightformer
+                    intensity={2}
+                    rotation-x={Math.PI / 2}
+                    position={[0, 4, 9]}
+                    scale={[10, 1, 1]}
+                />
+
+                <Lightformer
+                    intensity={12}
+                    rotation-y={Math.PI / 2}
+                    position={[-50, 2, 0]}
+                    scale={[100, 2, 1]}
+                />
+                <Lightformer
+                    intensity={12}
+                    rotation-y={-Math.PI / 2}
+                    position={[50, 2, 0]}
+                    scale={[100, 2, 1]}
+                />
+
+                <Lightformer
+                    form="ring"
+                    color="white"
+                    intensity={10}
+                    scale={2}
+                    position={[10, 5, 10]}
+                    onUpdate={(self) => self.lookAt(0, 0, 0)}
+                />
+            </Environment>
 
             {/* Render the structure */}
-            <Suspense fallback={null}>
+            <Suspense fallback={<Fallback />}>
                 <MorphedCube {...meshProps} position={[0, 0, -2]} />
+                <Model />
             </Suspense>
         </>
     );
